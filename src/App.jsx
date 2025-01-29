@@ -68,7 +68,7 @@ const App = () => {
   //  If Current Question is -1, show the start quiz button
   if (CurrentQuestion !== -1) {
     // If Current Question is more than the length of the questions array, show the results
-    if (CurrentQuestion === questions.length - 1) {
+    if (CurrentQuestion === questions.length) {
       return (
         <div className="w-[500px] max-w-[90%] bg-white p-2 rounded-lg shadow-md flex flex-col gap-2 justify-content-center items-center">
           <h1 className='text-center font-bold text-4xl'>Quiz Results</h1>
