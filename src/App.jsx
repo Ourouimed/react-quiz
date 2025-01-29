@@ -1,6 +1,43 @@
 import { useState } from 'react';
 import questions from './questions';
 
+
+const CircularProgressBar = ({ percentage, size, strokeWidth }) => {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg className="transform -rotate-90" width={size} height={size}>
+        <circle
+          className="text-gray-200"
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          r={radius}
+          cx={size / 2}
+          cy={size / 2}
+        />
+        <circle
+          className="text-cyan-500 transition-all duration-300 ease-in-out"
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          fill="transparent"
+          r={radius}
+          cx={size / 2}
+          cy={size / 2}
+        />
+      </svg>
+      <div className="absolute text-center">
+        <span className="text-lg font-bold">{percentage}%</span>
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
   const [CurrentQuestion, setCurrentQuestion] = useState(-1);
   const [TotalCorrect , setTotalCorrect] = useState(0)
@@ -21,7 +58,21 @@ const App = () => {
 
   if (CurrentQuestion !== -1) {
     if (CurrentQuestion === questions.length - 1) {
-      setCurrentQuestion(-1);
+      return (
+        <div className="w-[500px] max-w-[90%] bg-white p-2 rounded-lg shadow-md flex flex-col gap-2 justify-content-center items-center">
+          <h1 className='text-center font-bold text-4xl'>Quiz Results</h1>
+          <CircularProgressBar percentage={(TotalCorrect*100)/questions.length} size={120} strokeWidth={10}/>
+          <p>You have <span className='text-cyan font-bold text-center'>{TotalCorrect}/{questions.length}</span> Correct answers</p>
+          <button
+          onClick={()=>{
+            setCurrentQuestion(-1)
+          }}
+          className="bg-cyan-500 px-4 py-2 mx-auto my-2 text-white rounded-lg w-full block cursor-pointer"
+        >
+          Restart Quiz
+        </button>
+        </div>
+      )
     }
     return (
       <div className="w-[500px] max-w-[90%] bg-white p-2 rounded-lg shadow-md">
