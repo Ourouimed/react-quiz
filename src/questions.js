@@ -1,6 +1,6 @@
 let questions = [
     {
-        question: 'What does HTML stand for?',
+        question: 'Que signifie HTML ?',
         answers: [
             'Hyper Text Markup Language',
             'High Text Machine Language',
@@ -10,95 +10,195 @@ let questions = [
         correctAnswer: 0
     },
     {
-        question: 'Which HTML tag is used to define an internal style sheet?',
+        question: 'Quel est le rôle de la balise `<head>` en HTML ?',
         answers: [
-            '<css>',
-            '<style>',
-            '<script>',
-            '<link>'
+            'Définir le corps du document',
+            'Contenir les métadonnées du document',
+            'Insérer des images',
+            'Créer des liens hypertextes'
         ],
         correctAnswer: 1
     },
     {
-        question: 'Which CSS property is used to change the text color of an element?',
+        question: 'Quelle propriété CSS est utilisée pour changer la couleur de fond d\'un élément ?',
         answers: [
-            'text-color',
-            'font-color',
+            'background-color',
             'color',
-            'background-color'
+            'font-color',
+            'text-color'
         ],
-        correctAnswer: 2
+        correctAnswer: 0
     },
     {
-        question: 'What is the correct syntax for referring to an external JavaScript file?',
+        question: 'Quelle classe Bootstrap est utilisée pour créer un bouton bleu ?',
         answers: [
-            '<script href="script.js">',
-            '<script name="script.js">',
-            '<script src="script.js">',
-            '<script file="script.js">'
-        ],
-        correctAnswer: 2
-    },
-    {
-        question: 'Which HTML attribute is used to define inline styles?',
-        answers: [
-            'class',
-            'style',
-            'font',
-            'styles'
+            'btn-red',
+            'btn-primary',
+            'btn-blue',
+            'btn-success'
         ],
         correctAnswer: 1
     },
     {
-        question: 'How do you write an IF statement in JavaScript?',
+        question: 'Quelle balise HTML est utilisée pour créer un lien hypertexte ?',
         answers: [
-            'if i == 5 then',
-            'if (i == 5)',
-            'if i = 5',
-            'if i = 5 then'
+            '<link>',
+            '<a>',
+            '<href>',
+            '<hyperlink>'
         ],
         correctAnswer: 1
     },
     {
-        question: 'Which property is used to change the font of an element in CSS?',
+        question: 'Quelle propriété CSS est utilisée pour définir l\'espacement entre les lettres ?',
         answers: [
-            'font-family',
-            'font-style',
+            'line-height',
+            'letter-spacing',
+            'word-spacing',
+            'text-indent'
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: 'Quelle classe Bootstrap est utilisée pour centrer du texte ?',
+        answers: [
+            'text-center',
+            'center-text',
+            'align-center',
+            'text-middle'
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: 'Quelle balise HTML est utilisée pour insérer une image ?',
+        answers: [
+            '<img>',
+            '<image>',
+            '<picture>',
+            '<src>'
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: 'Quelle propriété CSS est utilisée pour rendre le texte en gras ?',
+        answers: [
             'font-weight',
-            'font-size'
+            'text-bold',
+            'font-style',
+            'bold'
         ],
         correctAnswer: 0
     },
     {
-        question: 'What is the correct way to write a JavaScript array?',
+        question: 'Quelle classe Bootstrap est utilisée pour créer une carte (card) ?',
         answers: [
-            'var colors = "red", "green", "blue"',
-            'var colors = (1:"red", 2:"green", 3:"blue")',
-            'var colors = ["red", "green", "blue"]',
-            'var colors = "red", "green", "blue"'
+            'card',
+            'panel',
+            'box',
+            'container'
         ],
-        correctAnswer: 2
+        correctAnswer: 0
     },
     {
-        question: 'Which HTML element is used to specify a footer for a document or section?',
+        question: 'Quelle balise HTML est utilisée pour créer une liste non ordonnée ?',
         answers: [
-            '<footer>',
+            '<ul>',
+            '<ol>',
+            '<li>',
+            '<list>'
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: 'Quelle propriété CSS est utilisée pour définir la taille de la police ?',
+        answers: [
+            'font-size',
+            'text-size',
+            'font-weight',
+            'size'
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: 'Quelle classe Bootstrap est utilisée pour créer un conteneur fluide ?',
+        answers: [
+            'container-fluid',
+            'container',
+            'fluid-container',
+            'full-width'
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: 'Quelle balise HTML est utilisée pour créer un tableau ?',
+        answers: [
+            '<table>',
+            '<tr>',
+            '<td>',
+            '<tab>'
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: 'Quelle propriété CSS est utilisée pour aligner le texte à droite ?',
+        answers: [
+            'text-align: right',
+            'align: right',
+            'text-right',
+            'right-align'
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: 'Quelle classe Bootstrap est utilisée pour créer une barre de navigation ?',
+        answers: [
+            'navbar',
+            'nav',
+            'navigation',
+            'nav-bar'
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: 'Quelle balise HTML est utilisée pour définir un en-tête de section ?',
+        answers: [
+            '<header>',
+            '<head>',
             '<section>',
-            '<bottom>',
-            '<div>'
+            '<h1>'
         ],
         correctAnswer: 0
     },
     {
-        question: 'Which of the following is NOT a JavaScript data type?',
+        question: 'Quelle propriété CSS est utilisée pour ajouter une ombre à un élément ?',
         answers: [
-            'String',
-            'Number',
-            'Boolean',
-            'Float'
+            'box-shadow',
+            'text-shadow',
+            'shadow',
+            'element-shadow'
         ],
-        correctAnswer: 3
+        correctAnswer: 0
+    },
+    {
+        question: 'Quelle classe Bootstrap est utilisée pour créer un bouton rouge ?',
+        answers: [
+            'btn-danger',
+            'btn-red',
+            'btn-error',
+            'btn-warning'
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: 'Quelle balise HTML est utilisée pour créer un formulaire ?',
+        answers: [
+            '<form>',
+            '<input>',
+            '<submit>',
+            '<button>'
+        ],
+        correctAnswer: 0
     }
 ]
 
-export default questions
+export default questions;

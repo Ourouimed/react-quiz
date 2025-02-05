@@ -56,13 +56,6 @@ const App = () => {
   // Start Quiz Button
   const StartQuiz = () => {
     if (CurrentQuestion !== -1) {
-      if (SelectedAnswerId === null) {
-        // If no answer is selected, ask the user if they want to skip
-        const skip = window.confirm("Are you sure you want to skip this question?");
-        if (skip) {
-          setCurrentQuestion(CurrentQuestion + 1);
-        }
-      } else {
         // Check if the selected answer is correct
         const isAnswerCorrect = SelectedAnswerId === questions[CurrentQuestion].correctAnswer;
         setIsCorrect(isAnswerCorrect);
@@ -77,9 +70,9 @@ const App = () => {
           setCurrentQuestion(CurrentQuestion + 1);
           setSelectedAnswerId(null); // Reset selected answer
           setIsCorrect(null); // Reset correctness state
-        }, 2000);
-      }
-    } else {
+        }, 500);
+    } 
+    else {
       // Start the quiz
       setCurrentQuestion(CurrentQuestion + 1);
     }
@@ -141,7 +134,8 @@ const App = () => {
           </div>
           <button
             onClick={StartQuiz}
-            className="bg-cyan-500 px-4 py-2 text-white rounded-lg cursor-pointer"
+            className={`bg-cyan-500 px-4 py-2 text-white rounded-lg ${SelectedAnswerId === null ? 'opacity-75 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`} 
+            disabled={SelectedAnswerId === null}
           >
             Next Question
           </button>
