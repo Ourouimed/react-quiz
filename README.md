@@ -1,9 +1,8 @@
 # Quiz App
-A modern  quiz application built with **React** and **Vite**. The app allows users to test their knowledge with interactive quizzes.
+AI Quiz Generator application built with **React** and **Vite**. with **Google Gemini AI APi** The app allows users to test their knowledge with interactive quizzes
 
-## Features
-
-- **Dynamic Quizzes**: Load quizzes dynamically from `question.js` file.
+## Features (v1.0.1 15/02/2025)
+- **Dynamic Quizzes**: Load quizzes dynamically from user choice (quiz topic , quiz level and number of questions) using **Gemini Ai**
 - **Responsive Design**: on desktops, tablets, and mobile devices.
 - **Score Tracking**: Displays scores and progress at the end of quiz.
 - **Fast and Optimized**: Built with Vite for faster builds and performance.
@@ -19,6 +18,7 @@ Check out the live demo [here](https://ourouimed.github.io/react-quiz).
 - **Frontend**: React, Vite
 - **Styling**: Tailwind CSS 
 - **State Management**: React hooks useState
+- **AI Generator** : Gemini Api
 
 ## Installation
 
@@ -44,7 +44,7 @@ To run this project locally:
 
 ## File Structure
 ```
-quiz-app/
+react-quiz/
 ├── public/             # Static assets 
     └── assets /        # Project screenShots
 ├── src/                # Quiz data 
@@ -60,34 +60,8 @@ quiz-app/
 └── eslint.config.js    # Eslint configuration
 ```
 
-## How to Add a New Quiz
-
-1. Open the `src/questions.js` file 
-2. Add your questions in the following format:
-
-   ```js
-   let questions = [
-    {
-        question: 'What does HTML stand for?',
-        answers: [
-            'Hyper Text Markup Language',
-            'High Text Machine Language',
-            'Hyperlinks and Text Markup Language',
-            'Home Tool Markup Language'
-        ],
-        correctAnswer: 0
-    },
-    {
-        question: 'Which HTML tag is used to define an internal style sheet?',
-        answers: [
-            '<css>',
-            '<style>',
-            '<script>',
-            '<link>'
-        ],
-        correctAnswer: 1
-    },...
-   ]
-   ```
-
-3. Save your changes. The new quiz will load automatically.
+## How to Generate a quiz (New 15/02/2025)?
+1. On the home page, enter the topic you want to generate a quiz about in the input field.
+2. Select the quiz difficulty level (Easy, Medium, Hard).
+3. Choose the number of questions (between 5 and 30).
+4. Click "Generate Quiz" and start testing your knowledge!
