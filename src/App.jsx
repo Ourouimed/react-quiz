@@ -1,57 +1,12 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import axios from 'axios';
 
-// Circular Progress Bar Component
-const CircularProgressBar = ({ percentage, size, strokeWidth }) => {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (percentage / 100) * circumference;
-
-  return (
-    <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
-      <svg className="transform -rotate-90" width={size} height={size}>
-        <circle
-          className="text-gray-200"
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          fill="transparent"
-          r={radius}
-          cx={size / 2}
-          cy={size / 2}
-        />
-        <circle
-          className="text-cyan-500 transition-all duration-300 ease-in-out"
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          fill="transparent"
-          r={radius}
-          cx={size / 2}
-          cy={size / 2}
-        />
-      </svg>
-      <div className="absolute text-center">
-        <span className="text-lg font-bold">{percentage}%</span>
-      </div>
-    </div>
-  );
-};
-
-CircularProgressBar.propTypes = {
-  percentage: PropTypes.number.isRequired,
-  size: PropTypes.number.isRequired,
-  strokeWidth: PropTypes.number.isRequired,
-};
-
-// Main App Component
 const App = () => {
   const [CurrentQuestion, setCurrentQuestion] = useState(-1);
   const [TotalCorrect, setTotalCorrect] = useState(0);
   const [SelectedAnswerId, setSelectedAnswerId] = useState(null);
   const [IsCorrect, setIsCorrect] = useState(null);
-  const [correctAnswer, setCorrectAnswer] = useState(null); 
+  const [correctAnswer, setCorrectAnswer] = useState(null);
   const [prompt, setPrompt] = useState('');
   const [selectedLev, setSelectedLev] = useState('easy');
   const levels = ['easy', 'medium', 'hard'];
@@ -59,67 +14,62 @@ const App = () => {
   const [questions, setQuestions] = useState([]);
   const [loadingData, setLoadingData] = useState(null);
   const [error, setError] = useState('');
+  const [SelectedModel, setSelectedModel] = useState('gemini-1.5-flash');
 
-
+  const aiModels = ['gemini-1.5-flash', 'GBT-4o', 'claude Sonnet'];
   const API_KEY = import.meta.env.VITE_API_KEY;
   const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-  // Generate Questions from ai based on user prompt and settings
+
   const GenerateQuest = async () => {
     setLoadingData(true);
+    setError('');
     try {
-      const response = await axios.post(API_URL, {
-        contents: [{
-          role: "user",
-          parts: [{ text: 
-            `
-         Generate a quiz with the following specifications:
+      const response = await axios.post(
+        API_URL,
+        {
+          contents: [
+            {
+              role: 'user',
+              parts: [
+                {
+                  text: `
+Generate a quiz with the following specifications:
 
 Number of questions: ${numQuestions}
-
 Topic: ${prompt}
-
 Difficulty level: ${selectedLev}
 
-Format the output as a JSON-like array of objects, where each object represents a question and includes:
-
-A question key with the question text.
-
-An answers key with an array of possible answers.
-
-A correctAnswer key with the index of the correct answer in the answers array.
-
-Example structure:
+Format the output as a JSON-like array of objects:
 [
-{
-"question": "question here",
-"answers": [...answers],
-"correctAnswer": correct answer index
-},
-...
+  {
+    "question": "question text",
+    "answers": ["answer1", "answer2", ...],
+    "correctAnswer": correctAnswerIndex
+  },
+  ...
 ]
 
-Additional instructions:
-
-Return only the output in plain text (not code) so it can be easily transformed into an object.
-
-If the input topic (${prompt}) is unclear, illogical, or cannot be used to generate meaningful questions, return only the following error message: "Error: Invalid or unclear topic provided."
-
-Ensure the questions, answers, and difficulty level (${selectedLev}) are appropriate and relevant to the topic.     
-  ` 
-}]
-        }]
-      }, {
-        headers: {
-          "Content-Type": "application/json"
+Only return raw text (no markdown, no \`\`\`). If the topic is invalid, return: "Error: Invalid or unclear topic provided."
+                  `,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
-      });
-    
-      const data = response.data;
-      let content = (data.candidates[0].content.parts[0].text).replace(/```json|```/g, "").trim();
+      );
+
+      let content = response.data.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim();
       let parsedQuestions = JSON.parse(content);
+
       if (!Array.isArray(parsedQuestions)) {
-        throw new Error("Error: Invalid or unclear topic provided.");
+        throw new Error();
       }
+
       setQuestions(parsedQuestions);
       NextQuestion();
     } catch (err) {
@@ -129,143 +79,169 @@ Ensure the questions, answers, and difficulty level (${selectedLev}) are appropr
       setLoadingData(null);
     }
   };
-  //  Move to next question
+
   const NextQuestion = () => {
     if (CurrentQuestion !== -1) {
       const isAnswerCorrect = SelectedAnswerId === questions[CurrentQuestion].correctAnswer;
       setIsCorrect(isAnswerCorrect);
-
-      // Set the correct answer for the current question
       setCorrectAnswer(questions[CurrentQuestion].correctAnswer);
+      if (isAnswerCorrect) setTotalCorrect(TotalCorrect + 1);
 
-      // Update the total correct answers if the answer is correct
-      if (isAnswerCorrect) {
-        setTotalCorrect(TotalCorrect + 1);
-      }
-
-      // Move to the next question after a delay
       setTimeout(() => {
-        setCurrentQuestion(CurrentQuestion + 1); // move to next question
-        setSelectedAnswerId(null); // Reset selected answer
-        setIsCorrect(null); // Reset correctness
-        setCorrectAnswer(null); // Reset correct answer
+        setCurrentQuestion(CurrentQuestion + 1);
+        setSelectedAnswerId(null);
+        setIsCorrect(null);
+        setCorrectAnswer(null);
       }, 800);
     } else {
-      // Start the quiz after generating questions
-      setCurrentQuestion(CurrentQuestion + 1);
+      setCurrentQuestion(0);
     }
   };
-  // Select the clicked answer id
+
   const SelectedAnswer = (id) => {
     setSelectedAnswerId(id);
   };
 
-  // Render Quiz Results
-  if (CurrentQuestion === questions.length) {
-    return (
-      <div className="w-[500px] max-w-[90%] bg-white p-2 rounded-lg shadow-md flex flex-col gap-2 justify-content-center items-center">
-        <h1 className='text-center font-bold text-4xl'>Quiz Results</h1>
-        <CircularProgressBar percentage={((TotalCorrect * 100) / questions.length).toFixed(2)} size={120} strokeWidth={10} />
-        <p>You have <span className='text-cyan font-bold text-center'>{TotalCorrect}/{questions.length}</span> correct answers</p>
-        <button
-          onClick={() => location.reload()}
-          className="bg-cyan-500 px-4 py-2 mx-auto my-2 text-white rounded-lg w-full block cursor-pointer"
+  return (
+      <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 to-slate-950 text-white flex flex-col items-center justify-center px-4 py-8">
+        <div className="w-full max-w-xl bg-slate-900 rounded-2xl shadow-lg p-6 space-y-6">
+          {CurrentQuestion === questions.length ? (
+           <>
+           <h1 className="text-3xl font-bold text-center text-cyan-500">Quiz Results</h1>
+           <div className="flex justify-center">
+             <CircularProgressBar percentage={((TotalCorrect * 100) / questions.length).toFixed(2)} size={120} strokeWidth={10} />
+           </div>
+           <p className="text-center text-lg">
+             You got <span className="font-semibold text-cyan-400">{TotalCorrect}/{questions.length}</span> correct answers
+           </p>
+           <button
+             onClick={() => location.reload()}
+             className="w-full py-2 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white font-semibold transition cursor-pointer"
+           >
+             Restart Quiz
+           </button>
+         </>
+          ) : CurrentQuestion !== -1 ? (
+            <>
+    <h2 className="text-xl font-bold">{CurrentQuestion + 1}) {questions[CurrentQuestion].question}</h2>
+    <ul className="space-y-2">
+      {questions[CurrentQuestion].answers.map((answer, index) => (
+        <li
+          key={index}
+          onClick={() => SelectedAnswer(index)}
+          className={`p-3 rounded-lg border-2 cursor-pointer transition-all
+            ${
+              SelectedAnswerId === index
+            ? IsCorrect
+              ? 'border-green-500' 
+              : IsCorrect === false
+              ? 'border-red-500'
+              : 'border-cyan-500' 
+            : correctAnswer === index
+            ? 'border-green-500' 
+            : 'border-gray-700'
+            }`}
         >
-          Restart Quiz
-        </button>
-      </div>
-    );
-  }
+          {answer}
+        </li>
+      ))}
+    </ul>
+    <div className="flex justify-between items-center pt-4 border-t border-gray-700">
+      <span className="text-sm text-gray-300">Question {CurrentQuestion + 1}/{questions.length}</span>
+      <button
+        onClick={NextQuestion}
+        disabled={SelectedAnswerId === null}
+        className={`px-4 py-2 rounded-lg font-semibold transition  cursor-pointer
+          ${
+            SelectedAnswerId === null
+              ? 'bg-cyan-500/50 cursor-not-allowed'
+              : 'bg-cyan-500 hover:bg-cyan-600 text-white'
+          }`}
+      >
+        Next
+      </button>
+    </div>
+  </>
+          ) : (
+            <>
+      <h1 className="text-2xl font-bold text-center text-cyan-500">AI Quiz Generator</h1>
 
-  // Render Current Question
-  if (CurrentQuestion !== -1) {
-    return (
-      <div className="w-[500px] max-w-[90%] bg-white p-2 rounded-lg shadow-md">
-        <h1 className="text-xl font-bold">
-          {CurrentQuestion + 1}) - {questions[CurrentQuestion].question}
-        </h1>
-        <ul className="py-3 flex flex-col gap-2">
-          {questions[CurrentQuestion].answers.map((answer ,index) => (
-            <li
-              key={index}
-              className={`border-2 p-3 cursor-pointer rounded-lg 
-                ${
-                  SelectedAnswerId === index
-                    ? IsCorrect === true
-                      ? 'border-green-500' // Correct answer
-                      : IsCorrect === false
-                      ? 'border-red-500' // Incorrect answer
-                      : 'border-cyan-500' // Selected but not evaluated
-                    : correctAnswer === index
-                    ? 'border-green-500' // Correct answer (highlighted even if not selected)
-                    : 'border-gray-200' // Not selected
-                }
-              `}
-              onClick={() => SelectedAnswer(index)}
-            >
-              {answer}
-            </li>
-          ))}
-        </ul>
-        <div className="border-t-2 border-gray-200 pt-2 flex items-center gap-2 justify-between cursor-pointer">
-          <div>
-            Question {CurrentQuestion + 1}/{questions.length}
-          </div>
-          <button
-            onClick={NextQuestion}
-            className={`bg-cyan-500 px-4 py-2 text-white rounded-lg ${SelectedAnswerId === null ? 'opacity-75 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`} 
-            disabled={SelectedAnswerId === null}
+      <div className='p-3 rounded-md bg-slate-800 text-white border border-slate-700 focus-within:border-cyan-500 transition duration-500 ease'>
+        <textarea
+          className="w-full h-40 outline-none resize-none"
+          placeholder="Enter a topic to generate questions..."
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+        />
+        <div className='flex justify-end'>
+          <select
+            className='py-2 px-4 border border-slate-700 rounded-full bg-slate-800 outline-none'
+            onChange={(e) => setSelectedModel(e.target.value)}
+            value={SelectedModel}
           >
-            Next Question
-          </button>
+            {aiModels.map(model => (
+              <option value={model} key={model}>{model}</option>
+            ))}
+          </select>
         </div>
       </div>
-    );
-  }
 
-  // Render quiz generator
-  return (
-    <div className="w-[500px] max-w-[90%] bg-white p-2 rounded-lg shadow-md">
-      <h1 className="text-2xl text-center text-cyan-500 font-bold">AI Quiz generator</h1>
-      <input  
-        className='w-full p-2 border border-2 border-gray-300 outline-none my-2 rounded-md' 
-        value={prompt} 
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder='write a topic to generate quiz for'
-      />
-      <h4 className='font-bold'>Quiz level</h4>
-      <ul className='flex align-center gap-1 my-1'>
-        {levels.map(lev => (
-          <li
-            key={lev}
-            className={`cursor-pointer py-1 px-2 border border-2 border-cyan-500 rounded-lg ${selectedLev === lev ? "bg-cyan-500 text-white" : "bg-white"}`}
-            onClick={() => setSelectedLev(lev)}
-          >
-            {lev}
-          </li>
-        ))}
-      </ul>
-      <div className='flex justify-between align-center'>
-        <h4>Number of questions :</h4>
-        <h4>{numQuestions}</h4>
+      <div>
+        <h4 className="font-semibold mb-2">Select Difficulty</h4>
+        <div className="flex space-x-2">
+          {levels.map((lev) => (
+            <button
+              key={lev}
+              onClick={() => setSelectedLev(lev)}
+              className={`px-3 py-1 rounded-full font-medium transition cursor-pointer
+                ${
+                  selectedLev === lev
+                    ? 'bg-cyan-500 text-slate-950'
+                    : 'bg-slate-700 text-white hover:bg-slate-600'
+                }`}
+            >
+              {lev}
+            </button>
+          ))}
+        </div>
       </div>
-      <input
-        type='range'
-        min={5}
-        max={30}
-        value={numQuestions}
-        onChange={(e) => setNumQuestions(e.target.value)}
-        className='w-full p-1'
-      />
+
+      <div>
+        <div className="flex justify-between items-center text-sm font-medium mb-1">
+          <span>Number of Questions</span>
+          <span>{numQuestions}</span>
+        </div>
+        <input
+          type="range"
+          min={5}
+          max={30}
+          value={numQuestions}
+          onChange={(e) => setNumQuestions(parseInt(e.target.value))}
+          className="w-full"
+        />
+      </div>
+
       <button
         onClick={GenerateQuest}
-        className={`bg-cyan-500 px-4 py-2 text-white rounded-lg w-full ${prompt === "" || loadingData ? 'opacity-75 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`} 
-        disabled={prompt === "" || loadingData}
+        disabled={prompt === '' || loadingData}
+        className={`w-full py-2 rounded-lg font-semibold transition cursor-pointer
+          ${
+            prompt === '' || loadingData
+              ? 'bg-cyan-500/50 cursor-not-allowed'
+              : 'bg-cyan-500 hover:bg-cyan-600 text-white'
+          }`}
       >
-        {loadingData ? "Generating questions...." : "Generate questions"}
+        {loadingData ? 'Generating...' : 'Generate Questions'}
       </button>
-      {error && <p className="text-red-500 mt-2">{error}</p>}
-    </div>
+
+      {error && <p className="text-red-500 text-center text-sm">{error}</p>}
+    </>
+          )}
+        </div>
+        <footer className="mt-6 text-sm text-gray-400 text-center">
+          Built by <a href="https://github.com/ourouimed" className="text-cyan-500 font-semibold" target="_blank">ourouimed</a> &copy; {new Date().getFullYear()}
+        </footer>
+      </div>
   );
 };
 
