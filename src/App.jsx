@@ -1,5 +1,53 @@
 import { useState } from 'react';
-import axios from 'axios';
+import PropTypes from 'prop-types';
+import { geminiAi , deepSeekAi, openAi} from './models';
+import { extractPdf } from './test';
+// Circular Progress Bar Component
+const CircularProgressBar = ({ percentage, size, strokeWidth }) => {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg className="transform -rotate-90" width={size} height={size}>
+        <circle
+          className="text-gray-200"
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          r={radius}
+          cx={size / 2}
+          cy={size / 2}
+        />
+        <circle
+          className="text-cyan-500 transition-all duration-300 ease-in-out"
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          fill="transparent"
+          r={radius}
+          cx={size / 2}
+          cy={size / 2}
+        />
+      </svg>
+      <div className="absolute text-center">
+        <span className="text-lg font-bold">{percentage}%</span>
+      </div>
+    </div>
+  );
+};
+
+CircularProgressBar.propTypes = {
+  percentage: PropTypes.number.isRequired,
+  size: PropTypes.number.isRequired,
+  strokeWidth: PropTypes.number.isRequired,
+};
+
+
+console.log(extractPdf())
+
 
 const App = () => {
   const [CurrentQuestion, setCurrentQuestion] = useState(-1);
@@ -14,71 +62,52 @@ const App = () => {
   const [questions, setQuestions] = useState([]);
   const [loadingData, setLoadingData] = useState(null);
   const [error, setError] = useState('');
-  const [SelectedModel, setSelectedModel] = useState('gemini-1.5-flash');
+ 
+  const aiModels = ['gemini-1.5-flash','DeepSeek-V3' , 'gpt-3.5-turbo'];
+  
+  const [SelectedModel, setSelectedModel] = useState(aiModels[0]);
 
-  const aiModels = ['gemini-1.5-flash', 'GBT-4o', 'claude Sonnet'];
-  const API_KEY = import.meta.env.VITE_API_KEY;
-  const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+  
 
   const GenerateQuest = async () => {
-    setLoadingData(true);
-    setError('');
-    try {
-      const response = await axios.post(
-        API_URL,
-        {
-          contents: [
-            {
-              role: 'user',
-              parts: [
-                {
-                  text: `
-Generate a quiz with the following specifications:
-
-Number of questions: ${numQuestions}
-Topic: ${prompt}
-Difficulty level: ${selectedLev}
-
-Format the output as a JSON-like array of objects:
-[
-  {
-    "question": "question text",
-    "answers": ["answer1", "answer2", ...],
-    "correctAnswer": correctAnswerIndex
-  },
-  ...
-]
-
-Only return raw text (no markdown, no \`\`\`). If the topic is invalid, return: "Error: Invalid or unclear topic provided."
-                  `,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      let content = response.data.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim();
-      let parsedQuestions = JSON.parse(content);
-
-      if (!Array.isArray(parsedQuestions)) {
-        throw new Error();
-      }
-
-      setQuestions(parsedQuestions);
-      NextQuestion();
-    } catch (err) {
-      console.error(err);
-      setError('Error: Invalid or unclear topic provided.');
-    } finally {
-      setLoadingData(null);
+    const FullPrompt = `
+    Generate a quiz with the following specifications:
+    
+    Number of questions: ${numQuestions}
+    Topic: ${prompt}
+    Difficulty level: ${selectedLev}
+    
+    Format the output as a JSON-like array of objects:
+    [
+      {
+        "question": "question text",
+        "answers": ["answer1", "answer2", ...],
+        "correctAnswer": correctAnswerIndex
+      },
+      ...
+    ]
+    
+    Only return raw text (no markdown, no \`\`\`). If the topic is invalid, return: "Error: Invalid or unclear topic provided."`
+    switch (SelectedModel) {
+      case 'gemini-1.5-flash':
+        await geminiAi(FullPrompt, setLoadingData, setError, setQuestions, () => setCurrentQuestion(0));
+        break;
+    
+      case 'DeepSeek-V3':
+        await deepSeekAi(FullPrompt, setLoadingData, setError, setQuestions, () => setCurrentQuestion(0));
+        break;
+      
+      case 'gpt-3.5-turbo' :
+        await openAi(FullPrompt, setLoadingData, setError, setQuestions, () => setCurrentQuestion(0));
+        break;
+      
+    
+      default:
+        setError('Unknown model selected.');
     }
+    
   };
+  
 
   const NextQuestion = () => {
     if (CurrentQuestion !== -1) {
@@ -116,7 +145,7 @@ Only return raw text (no markdown, no \`\`\`). If the topic is invalid, return: 
            </p>
            <button
              onClick={() => location.reload()}
-             className="w-full py-2 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white font-semibold transition cursor-pointer"
+             className="w-full py-2 rounded-lg font-semibold transition cursor-pointer bg-cyan-500 hover:bg-cyan-600 text-white"
            >
              Restart Quiz
            </button>
