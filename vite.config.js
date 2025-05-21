@@ -10,6 +10,5 @@ export default defineConfig({
     strictPort: true,
     allowedHosts: ['.codeanywhere.com'], // Allow any CodeAnywhere domain
   },
-  base: '/react-quiz/',
   plugins: [react() , tailwindcss()],
 })
