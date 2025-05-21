@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { geminiAi , deepSeekAi, openAi} from './models';
-import { extractPdf } from './test';
 // Circular Progress Bar Component
 const CircularProgressBar = ({ percentage, size, strokeWidth }) => {
   const radius = (size - strokeWidth) / 2;
@@ -44,9 +43,6 @@ CircularProgressBar.propTypes = {
   size: PropTypes.number.isRequired,
   strokeWidth: PropTypes.number.isRequired,
 };
-
-
-console.log(extractPdf())
 
 
 const App = () => {
