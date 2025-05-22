@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { MainContext } from "../contexts/MainContext";
+import { AppContext } from "../context/AppContext";
 
 const QuizSec = ()=>{
-    const {CurrentQuestion, questions, SelectedAnswerId, IsCorrect, correctAnswer, NextQuestion, SelectedAnswer} = useContext(MainContext);
+    const {CurrentQuestion, questions, SelectedAnswerId, IsCorrect, correctAnswer, NextQuestion, SelectedAnswer} = useContext(AppContext);
     return <>
     <h2 className="text-xl font-bold">{CurrentQuestion + 1}) {questions[CurrentQuestion].question}</h2>
     <ul className="space-y-2">

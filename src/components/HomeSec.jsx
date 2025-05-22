@@ -1,8 +1,13 @@
 import { useContext } from "react";
-import { MainContext } from "./contexts/MainContext";
+import { useState } from "react";
+import { AppContext } from "../context/AppContext";
+import {AttachFile} from '@mui/icons-material';
+
+
 
 const HomeSec = () => {
   const {
+    aiModels,
     prompt,
     setPrompt,
     selectedLev,
@@ -10,13 +15,20 @@ const HomeSec = () => {
     levels,
     numQuestions,
     setNumQuestions,
-    GenerateQuest,
+    generateQuestions,
     loadingData,
     error,
     SelectedModel,
     setSelectedModel,
-    aiModels,
-  } = useContext(MainContext);
+  } = useContext(AppContext);
+
+  const [fileName, setFileName] = useState('');
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) setFileName(file.name);
+  };
+
 
   return (
     <>
@@ -29,16 +41,36 @@ const HomeSec = () => {
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
         />
-        <div className='flex justify-end'>
-          <select
-            className='py-2 px-4 border border-slate-700 rounded-full bg-slate-800 outline-none'
-            onChange={(e) => setSelectedModel(e.target.value)}
-            value={SelectedModel}
-          >
-            {aiModels.map(model => (
-              <option value={model} key={model}>{model}</option>
-            ))}
-          </select>
+        <div className="flex justify-between items-center gap-4">
+  <div>
+    <input
+      type="file"
+      id="addFile"
+      className="hidden"
+      onChange={handleFileUpload}
+      
+    />
+    <label
+      htmlFor="addFile"
+      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800 text-white border border-slate-700 hover:bg-slate-700 cursor-pointer transition max-w-[150px] overflow-hidden"
+    >
+      <AttachFile className="w-4 h-4" />
+      <span className="text-sm">{fileName || 'Attach'}</span>
+    </label>
+  </div>
+
+  <select
+    className="py-2 px-4 border border-slate-700 rounded-full bg-slate-800 text-white outline-none hover:border-cyan-500 focus:ring-2 focus:ring-cyan-500 transition"
+    onChange={(e) => setSelectedModel(e.target.value)}
+    value={SelectedModel}
+  >
+    {aiModels.map((model) => (
+      <option value={model} key={model}>
+        {model}
+      </option>
+    ))}
+  </select>
+
         </div>
       </div>
 
@@ -78,7 +110,7 @@ const HomeSec = () => {
       </div>
 
       <button
-        onClick={GenerateQuest}
+        onClick={generateQuestions}
         disabled={prompt === '' || loadingData}
         className={`w-full py-2 rounded-lg font-semibold transition cursor-pointer
           ${
