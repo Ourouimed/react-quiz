@@ -10,17 +10,17 @@ const QuizSec = ()=>{
         <li
           key={index}
           onClick={() => SelectedAnswer(index)}
-          className={`p-3 rounded-lg border-2 cursor-pointer transition-all
+          className={`px-5 py-3 rounded-lg border-3 cursor-pointer transition-all 
             ${
               SelectedAnswerId === index
             ? IsCorrect
-              ? 'border-green-500' 
+              ? 'border-green-500 bg-green-500/30' 
               : IsCorrect === false
-              ? 'border-red-500'
-              : 'border-cyan-500' 
+              ? 'border-red-500 bg-red-500/30'
+              : 'border-cyan-500 bg-cyan-500/30' 
             : correctAnswer === index
-            ? 'border-green-500' 
-            : 'border-gray-700'
+            ? 'border-green-500 bg-green-500/30' 
+            : 'border-gray-700 bg-gray-700/30' 
             }`}
         >
           {answer}
@@ -32,14 +32,14 @@ const QuizSec = ()=>{
       <button
         onClick={NextQuestion}
         disabled={SelectedAnswerId === null}
-        className={`px-4 py-2 rounded-lg font-semibold transition  cursor-pointer
+        className={`py-3 px-5 rounded-lg font-bold transition
           ${
             SelectedAnswerId === null
-              ? 'bg-cyan-500/50 cursor-not-allowed'
-              : 'bg-cyan-500 hover:bg-cyan-600 text-white'
+              ? 'bg-cyan-500/50 cursor-not-allowed text-white/70'
+              : 'bg-cyan-500 hover:bg-cyan-600 text-slate-950 shadow-lg cursor-pointer'
           }`}
       >
-        Next
+        Next Quesion
       </button>
     </div>
   </>

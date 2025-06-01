@@ -1,26 +1,28 @@
-# Quiz App
+# Quiz App: AI-Powered Quiz Generator
 AI Quiz Generator application built with **React** and **Vite**. with **Google Gemini AI APi** The app allows users to test their knowledge with interactive quizzes
 
-## Features (v1.0.1 15/02/2025)
-- **Dynamic Quizzes**: Load quizzes dynamically from user choice (quiz topic , quiz level and number of questions) using **Gemini Ai**
-- **Responsive Design**: on desktops, tablets, and mobile devices.
-- **Score Tracking**: Displays scores and progress at the end of quiz.
-- **Fast and Optimized**: Built with Vite for faster builds and performance.
+## 🚀 Features (v2.0.0 – June 1, 2025)
+- **✅ Dynamic Quizzes**: Load quizzes dynamically from user choice (quiz topic , quiz level and number of questions) using **Gemini Ai**
+- **📱 Responsive Design**: on desktops, tablets, and mobile devices.
+- **📊 Score Tracking**: Displays scores and progress at the end of quiz.
+- **⚡ Fast & Optimized**: Built with Vite for faster builds and performance.
+- **📄 PDF Content Extraction**: Upload a PDF to generate quiz questions from its content. (New)
+- **🌍 Language Preference** : Choose your preferred quiz language. (New)
 
-## Demo & Screenshots
+## 🎥 Demo & Screenshots
 ![screenshot1](./public/assets/screenshot1.png)
 ![screenshot2](./public/assets/screenshot2.png)
 ![screenshot3](./public/assets/screenshot3.png)
 Check out the live demo [here](https://ourouimed.github.io/react-quiz).
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 - **Frontend**: React, Vite
 - **Styling**: Tailwind CSS 
 - **State Management**: React hooks useState
 - **AI Generator** : Gemini Api
 
-## Installation
+## ⚙️ Installation
 
 To run this project locally:
 
@@ -34,7 +36,11 @@ To run this project locally:
    ```bash
    npm install
    ```
-
+3. **Create .env file for Ai models API KEYS** :
+   ```bash
+   VITE_GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+   VITE_DEEPSEEK_API_KEY=YOUR_DEEPSEEK_API_KEY
+   VITE_OPENAI_API_KEY=YOUR_OPENAI_API_KEY
 3. **Start the development server**:
    ```bash
    npm run dev
@@ -42,7 +48,7 @@ To run this project locally:
 
 4. Open your browser and visit: `http://localhost:5173`
 
-## File Structure
+## 📁 Project Structure
 ```
 react-quiz/
 ├── public/             # Static assets 
@@ -60,8 +66,9 @@ react-quiz/
 └── eslint.config.js    # Eslint configuration
 ```
 
-## How to Generate a quiz (New 15/02/2025)?
-1. On the home page, enter the topic you want to generate a quiz about in the input field.
-2. Select the quiz difficulty level (Easy, Medium, Hard).
-3. Choose the number of questions (between 5 and 30).
-4. Click "Generate Quiz" and start testing your knowledge!
+## 🧠 How to Generate a Quiz?
+1. On the homepage, enter a quiz topic in the input field or upload a PDF file to extract content.
+2. Select the difficulty level: Easy, Medium, or Hard.
+3. Choose your preferred language for the quiz.
+4. Select the number of questions (between 5 and 30).
+5. Click "Generate Quiz" and start testing your knowledge!
