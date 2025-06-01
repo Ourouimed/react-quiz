@@ -13,6 +13,7 @@ AI Quiz Generator application built with **React** and **Vite**. with **Google G
 ![screenshot1](./public/assets/screenshot1.png)
 ![screenshot2](./public/assets/screenshot2.png)
 ![screenshot3](./public/assets/screenshot3.png)
+![screenshot4](./public/assets/screenshot4.png)
 Check out the live demo [here](https://ourouimed.github.io/react-quiz).
 
 ## 🛠️ Tech Stack
