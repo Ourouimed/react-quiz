@@ -24,24 +24,36 @@ const App = () => {
 
 
   const generatedPrompt = ()=> `
-    Generate a quiz with the following specifications:
-    
-    Number of questions: ${numQuestions}
-    Topic: ${prompt}
-    Difficulty level: ${selectedLev}
-    Language: ${language}
-    
-    Format the output as a JSON-like array of objects:
-    [
-      {
-        "question": "question text",
-        "answers": ["answer1", "answer2", ...],
-        "correctAnswer": correctAnswerIndex
-      },
-      ...
-    ]
-    
-    Only return raw text (no markdown, no \`\`\`). If the topic is invalid, return: "Error: Invalid or unclear topic provided."`
+Generate a quiz with the following specifications:
+Number of questions: ${numQuestions}
+Topic: ${prompt}
+Difficulty level: ${selectedLev}
+language : ${language}
+
+the response must be in string format  (no code, no formatting, no explanations, no markdown):
+[
+  {
+    "question": "question text",
+    "code": {
+      "content": "code here eg : console.log('hello world')",
+      "language": "javascript" // code language
+    }, 
+    // Use this for questions like "What is the output of this code?"  
+    // Do not write any code in the 'question' property — only in 'code'.  
+    // If a question does not require code, set code: null
+    "answers": ["answer1", "answer2", "answer3", "answer4"],
+    "correctAnswer": correctAnswerIndex
+  },
+  ...
+]
+
+
+Important rules:
+- Use double quotes on all strings.
+- for question with code do not have answer on code
+- Only return question on text fromat . Do not include any extra text.
+- Do not treat unvalid or unclear topics
+`
 
   const generateQuestions = async () => {
     const fullPrompt = generatedPrompt();
@@ -108,7 +120,7 @@ const App = () => {
         setLanguage 
       }
     }>
-      <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 to-slate-950 text-white flex flex-col items-center justify-center px-4 py-8">
+      <div className="min-h-screen w-full bg-gradient-to-br from-slate-800 to-slate-950 text-white flex flex-col items-center justify-center px-4 py-8">
         <div className="w-[600px] max-w-full bg-slate-900 rounded-2xl shadow-lg p-6 space-y-6">
           {CurrentQuestion === questions.length ? (
             <ScoreSec/>

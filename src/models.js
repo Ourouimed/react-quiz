@@ -20,16 +20,16 @@ const callAiApi = async ({
         'Content-Type': 'application/json',
         ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
         ...headers,
-      },
-      timeout: 10000, // 10 seconds timeout
+      }
     });
-
+    console.log(response)
     const content = parseResponse(response);
+    console.log(content)
 
     const parsedQuestions = JSON.parse(content);
-
+    console.log(parsedQuestions)
     if (!Array.isArray(parsedQuestions)) throw new Error('Response is not an array');
-
+    
     setQuestions(parsedQuestions);
     NextQuestion();
 
@@ -55,7 +55,7 @@ export const geminiAi = (prompt, setLoadingData, setError, setQuestions, NextQue
     ],
   };
 
-  const parseResponse = (response) => response.data.candidates[0].content.parts[0].text.trim();
+  const parseResponse = (response) => response.data.candidates[0].content.parts[0].text.replace(/```[\s\S]*?\n/, '').replace(/```$/, '').trim();
 
   return callAiApi({
     apiUrl: API_URL,
@@ -68,56 +68,3 @@ export const geminiAi = (prompt, setLoadingData, setError, setQuestions, NextQue
   });
 };
 
-// DeepSeek AI
-export const deepSeekAi = (prompt, setLoadingData, setError, setQuestions, NextQuestion) => {
-  const API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY;
-  const API_URL = 'https://api.deepseek.com/v1/chat/completions';
-
-  const payload = {
-    model: "deepseek-chat",
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.7,
-    top_p: 1,
-    max_tokens: 1024,
-  };
-
-  const parseResponse = (response) =>
-    response.data.choices[0].message?.content?.trim() || response.data.choices[0]?.text?.trim();
-
-  return callAiApi({
-    apiUrl: API_URL,
-    apiKey: API_KEY,
-    payload,
-    parseResponse,
-    setLoadingData,
-    setError,
-    setQuestions,
-    NextQuestion,
-  });
-};
-
-// OpenAI GPT-3.5 turbo
-export const openAi = (prompt, setLoadingData, setError, setQuestions, NextQuestion) => {
-  const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
-  const API_URL = 'https://api.openai.com/v1/chat/completions';
-
-  const payload = {
-    model: "gpt-3.5-turbo",
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.7,
-    max_tokens: 1024,
-  };
-
-  const parseResponse = (response) => response.data.choices[0].message.content.trim();
-
-  return callAiApi({
-    apiUrl: API_URL,
-    apiKey: API_KEY,
-    payload,
-    parseResponse,
-    setLoadingData,
-    setError,
-    setQuestions,
-    NextQuestion,
-  });
-};

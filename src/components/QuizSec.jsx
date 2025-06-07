@@ -1,12 +1,31 @@
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
+
 
 const QuizSec = ()=>{
     const {CurrentQuestion, questions, SelectedAnswerId, IsCorrect, correctAnswer, NextQuestion, SelectedAnswer} = useContext(AppContext);
+    const {question, answers, code} = questions[CurrentQuestion]
     return <>
-    <h2 className="text-xl font-bold">{CurrentQuestion + 1}) {questions[CurrentQuestion].question}</h2>
+    <h2 className="text-xl font-bold">{CurrentQuestion + 1}) {question}</h2>
+    {code != null && <SyntaxHighlighter
+  language={code.language}
+  style={oneDark}
+  customStyle={{
+    borderRadius: '0.5rem',
+    backgroundColor: '#0f172a', // Tailwind's slate-950
+    padding: '1.25rem',
+    border: '1px solid #1e293b', // slate-800
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  }}
+>
+  {code.content}
+</SyntaxHighlighter>}
+    
     <ul className="space-y-2">
-      {questions[CurrentQuestion].answers.map((answer, index) => (
+      {answers.map((answer, index) => (
         <li
           key={index}
           onClick={() => SelectedAnswer(index)}
