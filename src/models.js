@@ -22,12 +22,8 @@ const callAiApi = async ({
         ...headers,
       }
     });
-    console.log(response)
     const content = parseResponse(response);
-    console.log(content)
-
     const parsedQuestions = JSON.parse(content);
-    console.log(parsedQuestions)
     if (!Array.isArray(parsedQuestions)) throw new Error('Response is not an array');
     
     setQuestions(parsedQuestions);

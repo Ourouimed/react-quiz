@@ -40,8 +40,6 @@ To run this project locally:
 3. **Create .env file for Ai models API KEYS** :
    ```bash
    VITE_GEMINI_API_KEY=YOUR_GEMINI_API_KEY
-   VITE_DEEPSEEK_API_KEY=YOUR_DEEPSEEK_API_KEY
-   VITE_OPENAI_API_KEY=YOUR_OPENAI_API_KEY
 3. **Start the development server**:
    ```bash
    npm run dev
@@ -52,19 +50,26 @@ To run this project locally:
 ## 📁 Project Structure
 ```
 react-quiz/
-├── public/             # Static assets 
-    └── assets /        # Project screenShots
-├── src/                # Quiz data 
-│   ├── App.jsx         # Main app component
-│   ├── main.jsx        # React entry point
-│   ├── questions.js    # Questions data
-│   └── index.css       # Tailwindcss styles
-├── .gitignore          # Git ignore rules
-├── index.html          # Main HTML file
-├── package.json        # NPM configuration
-├── README.md           # Project documentation
-├── vite.config.js      # Vite configuration
-└── eslint.config.js    # Eslint configuration
+├── public/               # Static assets 
+    └── assets /          # Project screenShots
+├── src/                  # Quiz data 
+│   ├── components /      # Quiz components 
+│   │   ├── CircularProgressBar.jsx         
+│   │   ├── HomeSec.jsx   
+│   │   ├── QuizSec.js     
+│   │   └── ScoreSec.js 
+│   ├── context /         # React context 
+│   │   └── AppContext.js # Main App context
+│   ├── App.jsx           # Main app component
+│   ├── main.jsx          # React entry point
+│   ├── models.js         # AI integration logic
+│   └── index.css         # Tailwindcss styles
+├── .gitignore            # Git ignore rules
+├── index.html            # Main HTML file
+├── package.json          # NPM configuration
+├── README.md             # Project documentation
+├── vite.config.js        # Vite configuration
+└── eslint.config.js      # Eslint configuration
 ```
 
 ## 🧠 How to Generate a Quiz?
